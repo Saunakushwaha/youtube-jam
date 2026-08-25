@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube Jam</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── Landing ── -->
+  <div id="landing" class="screen">
+    <div class="logo">
+      <span class="logo-icon">🎵</span>
+      <h1>YouTube Jam</h1>
+      <p>Listen to music with your friend in real time</p>
+    </div>
+    <div class="card">
+      <button id="createBtn" class="btn primary full">Create Room</button>
+      <div class="divider"><span>or join one</span></div>
+      <div class="row gap">
+        <input id="codeInput" type="text" placeholder="Room code" maxlength="6" autocomplete="off" spellcheck="false" />
+        <button id="joinBtn" class="btn secondary">Join</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Room ── -->
+  <div id="room" class="screen hidden">
+
+    <header class="room-header card">
+      <div class="room-left">
+        <span class="room-label">Room</span>
+        <span id="roomCode" class="room-code"></span>
+        <button id="copyBtn" class="icon-btn" title="Copy code">📋</button>
+      </div>
+      <div id="friendStatus" class="friend-status"></div>
+      <button id="leaveBtn" class="btn secondary small hidden">Leave</button>
+    </header>
+
+    <div class="main-layout">
+
+      <!-- Left: player + now playing -->
+      <div class="left-col">
+        <div class="player-wrap">
+          <div id="player"></div>
+        </div>
+        <div id="nowPlayingBar" class="now-playing-bar hidden">
+          <img id="npThumb" src="" alt="" class="np-thumb" />
+          <div class="np-info">
+            <div id="npTitle" class="np-title"></div>
+            <div id="npChannel" class="np-channel"></div>
+          </div>
+        </div>
+        <!-- Hidden resync anchor; shown/hidden via JS if needed -->
+        <div id="listenerBanner" class="hidden"></div>
+      </div>
+
+      <!-- Right: search + queue -->
+      <div class="right-col">
+
+        <!-- Search (available to all) -->
+        <div id="hostSearch" class="hidden">
+          <div class="search-wrap">
+            <input id="searchInput" type="text" placeholder="Search songs…" autocomplete="off" />
+            <div id="searchResults" class="search-results hidden"></div>
+          </div>
+          <div class="url-row">
+            <input id="urlInput" type="text" placeholder="Or paste YouTube / YT Music URL" autocomplete="off" />
+            <button id="loadBtn" class="btn secondary small">Play</button>
+          </div>
+        </div>
+
+        <!-- Queue -->
+        <div class="queue-section">
+          <div class="queue-header">
+            <span class="queue-title">Up Next</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span id="queueCount" class="queue-count">0 songs</span>
+              <button id="resyncBtn" class="btn secondary small">⟳ Sync</button>
+            </div>
+          </div>
+          <div id="queueList" class="queue-list">
+            <div class="queue-empty">Queue is empty</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
