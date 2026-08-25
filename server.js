@@ -2,7 +2,7 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
-const ytsr = require('ytsr');
+const YouTubeSR = require('youtube-sr');
 
 const app = express();
 const server = http.createServer(app);
@@ -21,20 +21,14 @@ app.get('/api/search', async (req, res) => {
   const q = (req.query.q || '').trim();
   if (q.length < 2) return res.json({ results: [] });
   try {
-    // ytsr v3 logs "type X is not known" for newer YouTube response shapes — suppress those
-    const origError = console.error;
-    console.error = () => {};
-    const raw = await ytsr(q, { limit: 10 }).finally(() => { console.error = origError; });
-    const results = raw.items
-      .filter((item) => item.type === 'video')
-      .slice(0, 8)
-      .map((item) => ({
-        videoId: item.id,
-        title: item.title,
-        thumbnail: item.bestThumbnail?.url || `https://img.youtube.com/vi/${item.id}/mqdefault.jpg`,
-        channel: item.author?.name || '',
-        duration: item.duration || '',
-      }));
+    const raw = await YouTubeSR.YouTube.search(q, { limit: 10, type: 'video' });
+    const results = raw.map((item) => ({
+      videoId: item.id,
+      title: item.title,
+      thumbnail: item.thumbnail?.url || `https://img.youtube.com/vi/${item.id}/mqdefault.jpg`,
+      channel: item.channel?.name || '',
+      duration: item.durationFormatted || '',
+    }));
     res.json({ results });
   } catch (e) {
     console.error('Search error:', e.message);
